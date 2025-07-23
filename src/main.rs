@@ -1,22 +1,48 @@
+use clap::{Parser, Subcommand};
 use colors::Colors;
 
 pub mod colors;
 
+include!(concat!(env!("OUT_DIR"), "/codegen.rs"));
+
+/// Generate themes from Catppuccin templates.
+#[derive(Parser, Debug)]
+struct Args {
+    /// The command to run
+    #[clap(subcommand)]
+    command: Command,
+}
+
+#[derive(Subcommand, Debug)]
+enum Command {
+    /// List builtin themes
+    ListBuiltin,
+    /// Print a theme
+    Print {
+        /// Theme name
+        theme: String,
+    },
+}
+
 fn main() {
-    // TODO:
-    // - add builtin ones within (like, print them on demand just to see)
-    // - print themes for debug
-    // - use clap for pretty CLI
-    // - process tera templates
-    println!("Hello, world!");
+    let args = Args::parse();
 
-    let path = "themes/catppuccin-frappe.toml";
-    let content = std::fs::read_to_string(path).expect("Failed to read the file");
+    match args.command {
+        Command::ListBuiltin => {
+            BUILTIN_THEMES.keys().for_each(|&theme| {
+                println!("{theme}");
+            });
+        }
+        Command::Print { theme } => {
+            if let Some(theme) = BUILTIN_THEMES.get(theme.as_str()) {
+                let theme: Colors = toml::from_str(theme).unwrap();
+                println!("{:#?}", theme);
+                return;
+            }
 
-    println!("Content of {}: \n{}", path, content);
-
-    let colors: Colors =
-        toml::from_str(&content).expect("Failed to parse TOML content into Colors struct");
-
-    println!("Parsed Colors: {:#?}", colors);
+            // TODO: search in config directory
+            eprintln!("Theme '{theme}' not found.");
+            std::process::exit(1);
+        }
+    }
 }

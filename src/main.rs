@@ -1,8 +1,14 @@
+use std::fs;
+
 use clap::{Parser, Subcommand};
 use colors::Colors;
+use config::read_theme_from_config;
+use tera::Tera;
+use themes::get_theme;
 
 pub mod colors;
 pub mod config;
+pub mod themes;
 
 include!(concat!(env!("OUT_DIR"), "/codegen.rs"));
 
@@ -23,6 +29,13 @@ enum Command {
         /// Theme name
         theme: String,
     },
+    /// Fill a template with a theme
+    Template {
+        /// Template name
+        template: String,
+        /// Theme name
+        theme: String,
+    },
 }
 
 fn main() {
@@ -38,18 +51,11 @@ fn main() {
             });
         }
         Command::Print { theme } => {
-            if let Some(theme) = BUILTIN_THEMES.get(theme.as_str()) {
-                let theme: Colors = toml::from_str(theme).unwrap();
+            if let Some(theme) = get_theme(&theme) {
                 println!("{:#?}", theme);
                 return;
             }
 
-            if let Some(theme) = read_theme_from_config(&theme) {
-                println!("{:#?}", theme);
-                return;
-            }
-
-            // TODO: search in config directory
             eprintln!("Theme '{theme}' not found.");
             std::process::exit(1);
         }

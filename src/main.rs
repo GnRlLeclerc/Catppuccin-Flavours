@@ -2,6 +2,7 @@ use clap::{Parser, Subcommand};
 use colors::Colors;
 
 pub mod colors;
+pub mod config;
 
 include!(concat!(env!("OUT_DIR"), "/codegen.rs"));
 
@@ -39,6 +40,11 @@ fn main() {
         Command::Print { theme } => {
             if let Some(theme) = BUILTIN_THEMES.get(theme.as_str()) {
                 let theme: Colors = toml::from_str(theme).unwrap();
+                println!("{:#?}", theme);
+                return;
+            }
+
+            if let Some(theme) = read_theme_from_config(&theme) {
                 println!("{:#?}", theme);
                 return;
             }

@@ -29,7 +29,10 @@ fn main() {
 
     match args.command {
         Command::ListBuiltin => {
-            BUILTIN_THEMES.keys().for_each(|&theme| {
+            let mut themes: Vec<_> = BUILTIN_THEMES.keys().collect();
+            themes.sort();
+
+            themes.iter().for_each(|&theme| {
                 println!("{theme}");
             });
         }

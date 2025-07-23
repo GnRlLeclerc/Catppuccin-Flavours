@@ -1,11 +1,11 @@
 //! Color palette used in Tera templates, with different color formats.
 
-use serde::{Deserialize, Serialize};
+use serde::Serialize;
 
 use crate::themes::Theme;
 
 /// Serializable color palette for injection into tera templates.
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize)]
 pub struct Palette {
     pub rosewater: Color,
     pub flamingo: Color,
@@ -36,7 +36,7 @@ pub struct Palette {
 }
 
 /// A theme color
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize)]
 pub struct Color {
     /// Color hex value (without the leading `#`)
     pub hex: String,
@@ -53,7 +53,6 @@ impl From<String> for Color {
         let r = u8::from_str_radix(&hex[1..3], 16).unwrap();
         let g = u8::from_str_radix(&hex[3..5], 16).unwrap();
         let b = u8::from_str_radix(&hex[5..7], 16).unwrap();
-        let hex = hex.trim_start_matches('#').to_string();
         Self { hex, r, g, b }
     }
 }

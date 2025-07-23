@@ -8,3 +8,18 @@ Note: the original tera templates that are built in were slightly modified to be
 ## Builtin Themes
 
 The [`themes`](./themes) folder contains builtin themes. You can add custom themes in the `~/.config/cfl/themes/` directory. Your custom themes take precedence over builtin ones.
+
+## Builtin Templates
+
+The [`templates`](./templates) folder contains builtin templates. You can add custom templates in the `~/.config/cfl/templates/` directory. Your custom templates take precedence over builtin ones.
+
+## Configuration
+
+Configure the files you want to be regenerated like so (the command is optional):
+
+```toml
+[[entries]]
+template = "fzf"
+target = "~/.config/fish/fzf.fish"
+command = "fish ~/.config/fish/fzf.fish"
+```

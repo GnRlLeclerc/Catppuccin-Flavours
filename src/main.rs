@@ -1,6 +1,8 @@
 use std::fs;
 
 use clap::{Parser, Subcommand};
+use config::{CONFIG_FILE, Config};
+use rayon::prelude::*;
 use render::render_template;
 use themes::get_theme;
 
@@ -33,6 +35,11 @@ enum Command {
         /// Theme name
         theme: String,
     },
+    /// Apply a theme to the current configuration
+    Apply {
+        /// Theme name
+        theme: String,
+    },
 }
 
 fn main() {
@@ -53,11 +60,12 @@ fn main() {
                 println!("{template}");
             });
         }
-
-        Command::Template { template, theme } => {
-            let theme_name = theme;
-            let theme = get_theme(&theme_name).unwrap_or_else(|| {
-                eprintln!("Theme '{theme_name}' not found.");
+        Command::Template {
+            template,
+            theme: name,
+        } => {
+            let theme = get_theme(&name).unwrap_or_else(|| {
+                eprintln!("Theme '{name}' not found.");
                 std::process::exit(1);
             });
 
@@ -65,9 +73,40 @@ fn main() {
             let template = fs::read_to_string(template).expect("Failed to read template file");
 
             let rendered =
-                render_template(&theme_name, theme, &template).expect("Failed to render template");
+                render_template(&name, theme, &template).expect("Failed to render template");
 
             println!("Rendered template:\n{rendered}");
+        }
+        Command::Apply { theme: name } => {
+            let theme = get_theme(&name).expect("Theme not found");
+
+            let config =
+                fs::read_to_string(&*CONFIG_FILE).expect("Failed to read configuration file");
+            let config: Config =
+                toml::from_str(&config).expect("Failed to parse configuration file");
+
+            // Parallel iteration using rayon for commands that might take time
+            config.entries.into_par_iter().for_each(|entry| {
+                let template = template::get_template(&entry.template).expect("Template not found");
+
+                let rendered = render_template(&name, theme.clone(), &template)
+                    .expect("Failed to render template");
+
+                // Write the rendered template to the target file
+                let target = shellexpand::tilde(&entry.target);
+                println!("target: {}", target);
+
+                fs::write(&*target, rendered).expect("Failed to write to target file");
+
+                // If a command is specified, run it
+                if let Some(command) = entry.command {
+                    std::process::Command::new("sh")
+                        .arg("-c")
+                        .arg(command)
+                        .status()
+                        .expect("Failed to run command");
+                }
+            });
         }
     }
 }

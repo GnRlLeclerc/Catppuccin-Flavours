@@ -14,4 +14,7 @@ lazy_static! {
 
     /// Custom themes directory
     pub static ref THEMES_DIR: PathBuf = CONFIG_DIR.join("themes");
+
+    /// Custom templates directory
+    pub static ref TEMPLATES_DIR: PathBuf = CONFIG_DIR.join("templates");
 }

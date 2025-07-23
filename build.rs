@@ -26,7 +26,7 @@ fn main() {
 
     write!(
         &mut file,
-        "static BUILTIN_THEMES: phf::Map<&'static str, &'static str> = {};",
+        "static BUILTIN_THEMES: phf::Map<&'static str, &'static str> = {};\n",
         map.build()
     )
     .unwrap();

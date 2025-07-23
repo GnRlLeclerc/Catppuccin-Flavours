@@ -1,62 +1,48 @@
-//! Template utilities
+//! Templates and how to fetch them.
 
-use serde::{Deserialize, Serialize};
-use tera::{Context, Tera};
+use crate::{BUILTIN_TEMPLATES, config::TEMPLATES_DIR};
 
-use crate::colors::{Palette, Theme};
-
-// BUG : functions ? css_hsl ?
-
-/// Render a Tera template with the given theme.
-pub fn render_template(
-    theme_name: &str,
-    theme: Theme,
-    template: &str,
-) -> Result<String, tera::Error> {
-    let palette = Palette::from(theme);
-
-    let mut tera = Tera::default();
-    let mut context = Context::new();
-    context.insert("accent", &palette.blue);
-    context.insert("palette", &palette);
-    context.insert("flavor", &Flavor::new(theme_name, palette));
-
-    tera.render_str(template, &context)
-}
-
-/// Theme metadata for Tera templates
-#[derive(Debug, Clone, Serialize, Deserialize)]
-struct Flavor {
-    identifier: String,
-    name: String,
-    colors: Palette,
-}
-
-impl Flavor {
-    pub fn new(theme_name: &str, colors: Palette) -> Self {
-        let name = capitalize_words(
-            &theme_name
-                .replace('_', " ")
-                .replace('-', " ")
-                .to_lowercase(),
-        );
-        Self {
-            identifier: theme_name.to_string(),
-            colors,
-            name,
-        }
+/// Try to read a template from the configuration directory
+fn read_template_from_config(name: &str) -> Option<String> {
+    let path = TEMPLATES_DIR.join(format!("{name}.tera"));
+    if path.exists() {
+        Some(std::fs::read_to_string(path).unwrap())
+    } else {
+        None
     }
 }
 
-fn capitalize_words(s: &str) -> String {
-    s.split_whitespace()
-        .map(|word| {
-            let mut chars = word.chars();
-            match chars.next() {
-                Some(first) => first.to_uppercase().collect::<String>() + chars.as_str(),
-                None => String::new(),
+/// Get a template by its name.
+/// Custom templates from the config directory take precedence over builtin templates.
+pub fn get_template(name: &str) -> Option<String> {
+    let template = read_template_from_config(name);
+    if template.is_some() {
+        return template;
+    }
+
+    BUILTIN_TEMPLATES.get(name).map(|s| s.to_string())
+}
+
+/// List all available templates.
+pub fn list_all() -> Vec<String> {
+    let mut set: std::collections::HashSet<String> = std::collections::HashSet::new();
+
+    // Add builtin templates
+    for template in BUILTIN_TEMPLATES.keys() {
+        set.insert(template.to_string());
+    }
+
+    // Add templates from the config directory
+    if TEMPLATES_DIR.exists() {
+        for entry in std::fs::read_dir(&*TEMPLATES_DIR).unwrap() {
+            let entry = entry.unwrap();
+            if entry.path().extension().and_then(|s| s.to_str()) == Some("tera") {
+                if let Some(name) = entry.path().file_stem().and_then(|s| s.to_str()) {
+                    set.insert(name.to_string());
+                }
             }
-        })
-        .collect::<Vec<_>>()
-        .join(" ")
+        }
+    }
+
+    set.into_iter().collect()
 }

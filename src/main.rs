@@ -1,11 +1,13 @@
 use std::fs;
 
-use clap::{Parser, Subcommand};
+use clap::{CommandFactory, Parser};
+use cli::{Args, Command, print_completions};
 use config::{CONFIG_FILE, Config};
 use rayon::prelude::*;
 use render::render_template;
 use themes::get_theme;
 
+pub mod cli;
 pub mod colors;
 pub mod config;
 pub mod render;
@@ -14,49 +16,21 @@ pub mod themes;
 
 include!(concat!(env!("OUT_DIR"), "/codegen.rs"));
 
-/// Generate themes from Catppuccin templates.
-#[derive(Parser, Debug)]
-struct Args {
-    /// The command to run
-    #[clap(subcommand)]
-    command: Command,
-}
-
-#[derive(Subcommand, Debug)]
-enum Command {
-    /// List all available themes
-    ListThemes,
-    /// List all available templates
-    ListTemplates,
-    /// Render a template with a theme
-    Template {
-        /// Template name
-        template: String,
-        /// Theme name
-        theme: String,
-    },
-    /// Apply a theme to the current configuration
-    Apply {
-        /// Theme name
-        theme: String,
-    },
-}
-
 fn main() {
     let args = Args::parse();
 
     match args.command {
+        Command::Completions { shell } => {
+            let mut cmd = Args::command();
+            print_completions(shell, &mut cmd);
+        }
         Command::ListThemes => {
-            let themes = themes::list_all();
-
-            themes.iter().for_each(|theme| {
+            themes::list_all().iter().for_each(|theme| {
                 println!("{theme}");
             });
         }
         Command::ListTemplates => {
-            let templates = template::list_all();
-
-            templates.iter().for_each(|template| {
+            template::list_all().iter().for_each(|template| {
                 println!("{template}");
             });
         }

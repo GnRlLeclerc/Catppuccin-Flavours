@@ -4,13 +4,10 @@ version = "0.1.0"
 edition = "2024"
 build = "build.rs"
 
-[[bin]]
-name = "cfl"
-path = "src/main.rs"
-
 
 [dependencies]
 clap = { version = "4.5.41", features = ["derive"] }
+clap_complete = "4.5.55"
 directories-next = "2.0.0"
 lazy_static = "1.5.0"
 phf = "0.12.1"

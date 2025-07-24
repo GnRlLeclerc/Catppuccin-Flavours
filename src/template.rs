@@ -44,5 +44,7 @@ pub fn list_all() -> Vec<String> {
         }
     }
 
-    set.into_iter().collect()
+    let mut list: Vec<_> = set.into_iter().collect();
+    list.sort();
+    list
 }

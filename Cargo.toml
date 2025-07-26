@@ -1,5 +1,6 @@
 [package]
 name = "catppuccin-flavours"
+description = "Theme generator from Catppuccin templates"
 version = "0.1.0"
 edition = "2024"
 build = "build.rs"

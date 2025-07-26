@@ -1,4 +1,4 @@
-use std::{fs, process::Stdio};
+use std::{fs, path::PathBuf, process::Stdio};
 
 use clap::{CommandFactory, Parser};
 use cli::{AccentColor, Args, Command, print_completions};
@@ -88,8 +88,8 @@ fn process_entry(
         .map_err(|e| format!("Failed to render template: {}", e))?;
 
     // Write the rendered template to the target file
-    let target = shellexpand::tilde(&entry.target);
-    let _ = fs::create_dir_all(&*target);
+    let target = PathBuf::from(&*shellexpand::tilde(&entry.target));
+    let _ = fs::create_dir_all(target.parent().unwrap());
     fs::write(&*target, rendered).map_err(|e| format!("Failed to write to target file: {}", e))?;
 
     // If a command is specified, run it

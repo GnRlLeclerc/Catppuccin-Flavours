@@ -14,13 +14,16 @@ fn read_template_from_config(name: &str) -> Option<String> {
 
 /// Get a template by its name.
 /// Custom templates from the config directory take precedence over builtin templates.
-pub fn get_template(name: &str) -> Option<String> {
+pub fn get_template(name: &str) -> Result<String, String> {
     let template = read_template_from_config(name);
     if template.is_some() {
-        return template;
+        return Ok(template.unwrap());
     }
 
-    BUILTIN_TEMPLATES.get(name).map(|s| s.to_string())
+    BUILTIN_TEMPLATES
+        .get(name)
+        .map(|s| s.to_string())
+        .ok_or_else(|| format!("Template '{name}' not found."))
 }
 
 /// List all available templates.

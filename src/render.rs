@@ -1,30 +1,32 @@
 //! Template utilities
 
-use serde::{Deserialize, Serialize};
+use serde::Serialize;
 use tera::{Context, Tera};
 
-use crate::{colors::Palette, themes::Theme};
+use crate::{cli::AccentColor, colors::Palette};
 
 /// Render a Tera template with the given theme.
 pub fn render_template(
     theme_name: &str,
-    theme: Theme,
+    palette: &Palette,
+    accent: AccentColor,
     template: &str,
 ) -> Result<String, tera::Error> {
-    let palette = Palette::from(theme);
+    let accent = palette.accent(accent);
+    let flavor = Flavor::new(theme_name);
 
     let mut tera = Tera::default();
     let mut context = Context::new();
 
-    context.insert("accent", &palette.blue); // TODO: add an option to set this
+    context.insert("accent", accent);
     context.insert("palette", &palette);
-    context.insert("flavor", &Flavor::new(theme_name));
+    context.insert("flavor", &flavor);
 
     tera.render_str(template, &context)
 }
 
 /// Theme metadata for Tera templates
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize)]
 struct Flavor {
     identifier: String,
     name: String,

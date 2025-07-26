@@ -596,8 +596,11 @@ settings:
     description: Select your preferred accent
     type: class-select
     allowEmpty: false
-    default: ctp-full-palette
+    default: ctp-accent-dynamic
     options:
+      -
+        label: Dynamic
+        value: ctp-accent-dynamic
       -
         label: Full palette
         value: ctp-full-palette
@@ -1585,6 +1588,10 @@ settings:
 
 .ctp-accent-lavender {
   --ctp-accent: var(--ctp-lavender);
+}
+
+.ctp-accent-dynamic {
+  --ctp-accent: {{accent.r}}, {{accent.g}}, {{accent.b}};
 }
 
 /* ------------------Actual Configs-------------------- */

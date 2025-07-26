@@ -30,7 +30,7 @@ macos_titlebar_color system
 
 # Tab bar colors
 active_tab_foreground   {% if flavor.dark %}{{ palette.crust.hex }}{% else %}{{ palette.base.hex }}{% endif %}
-active_tab_background   {{ palette.mauve.hex }}
+active_tab_background   {{ accent.hex }}
 inactive_tab_foreground {{ palette.text.hex }}
 inactive_tab_background {% if flavor.dark %}{{ palette.mantle.hex }}{% else %}{{ palette.overlay0.hex }}{% endif %}
 tab_bar_background      {% if flavor.dark %}{{ palette.crust.hex }}{% else %}{{ palette.surface1.hex }}{% endif %}

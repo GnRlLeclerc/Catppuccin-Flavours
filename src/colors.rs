@@ -2,7 +2,7 @@
 
 use serde::Serialize;
 
-use crate::themes::Theme;
+use crate::{cli::AccentColor, themes::Theme};
 
 /// Serializable color palette for injection into tera templates.
 #[derive(Debug, Clone, Serialize)]
@@ -95,6 +95,28 @@ impl From<Theme> for Palette {
             base: Color::from(theme.base),
             mantle: Color::from(theme.mantle),
             crust: Color::from(theme.crust),
+        }
+    }
+}
+
+impl Palette {
+    /// Get the full color value for a given accent color.
+    pub fn accent(&self, accent: AccentColor) -> &Color {
+        match accent {
+            AccentColor::Rosewater => &self.rosewater,
+            AccentColor::Flamingo => &self.flamingo,
+            AccentColor::Pink => &self.pink,
+            AccentColor::Mauve => &self.mauve,
+            AccentColor::Red => &self.red,
+            AccentColor::Maroon => &self.maroon,
+            AccentColor::Peach => &self.peach,
+            AccentColor::Yellow => &self.yellow,
+            AccentColor::Green => &self.green,
+            AccentColor::Teal => &self.teal,
+            AccentColor::Sky => &self.sky,
+            AccentColor::Sapphire => &self.sapphire,
+            AccentColor::Blue => &self.blue,
+            AccentColor::Lavender => &self.lavender,
         }
     }
 }

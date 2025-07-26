@@ -38,8 +38,10 @@ pub struct Palette {
 /// A theme color
 #[derive(Debug, Clone, Serialize)]
 pub struct Color {
-    /// Color hex value (without the leading `#`)
+    /// Color hex value
     pub hex: String,
+    /// Color hex value (without the leading `#`)
+    pub rawhex: String,
     /// Red
     pub r: u8,
     /// Green
@@ -53,7 +55,14 @@ impl From<String> for Color {
         let r = u8::from_str_radix(&hex[1..3], 16).unwrap();
         let g = u8::from_str_radix(&hex[3..5], 16).unwrap();
         let b = u8::from_str_radix(&hex[5..7], 16).unwrap();
-        Self { hex, r, g, b }
+        let rawhex = hex.trim_start_matches('#').to_string();
+        Self {
+            hex,
+            rawhex,
+            r,
+            g,
+            b,
+        }
     }
 }
 

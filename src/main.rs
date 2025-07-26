@@ -89,8 +89,7 @@ fn process_entry(
 
     // Write the rendered template to the target file
     let target = shellexpand::tilde(&entry.target);
-    fs::create_dir_all(&*target)
-        .map_err(|e| format!("Failed to create target directory: {}", e))?;
+    let _ = fs::create_dir_all(&*target);
     fs::write(&*target, rendered).map_err(|e| format!("Failed to write to target file: {}", e))?;
 
     // If a command is specified, run it

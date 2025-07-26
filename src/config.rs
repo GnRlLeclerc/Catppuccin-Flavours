@@ -8,7 +8,7 @@ use serde::Deserialize;
 
 lazy_static! {
     /// Configuration directory for the application
-    pub static ref CONFIG_DIR: PathBuf = ProjectDirs::from("com", "GnRl Leclerc", "cfl")
+    pub static ref CONFIG_DIR: PathBuf = ProjectDirs::from("com", "GnRl Leclerc", "catppuccin-flavours")
         .unwrap()
         .config_dir()
         .to_path_buf();

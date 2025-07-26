@@ -28,6 +28,7 @@ pub fn render_template(
 struct Flavor {
     identifier: String,
     name: String,
+    dark: bool,
 }
 
 impl Flavor {
@@ -41,6 +42,7 @@ impl Flavor {
         Self {
             identifier: theme_name.to_string(),
             name,
+            dark: true, // TODO: add this to theme configurations!
         }
     }
 }

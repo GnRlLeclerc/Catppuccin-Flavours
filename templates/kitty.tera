@@ -1,0 +1,78 @@
+## name:     Catppuccin Flavours
+## author:   Catppuccin Org
+## license:  MIT
+## upstream: https://github.com/catppuccin/kitty/blob/main/themes/{{ flavor.identifier }}.conf
+## blurb:    Soothing pastel theme for the high-spirited!
+
+
+
+# The basic colors
+foreground              {{ palette.text.hex }}
+background              {{ palette.base.hex }}
+selection_foreground    {{ palette.base.hex }}
+selection_background    {{ palette.rosewater.hex }}
+
+# Cursor colors
+cursor                  {{ palette.rosewater.hex }}
+cursor_text_color       {{ palette.base.hex }}
+
+# URL underline color when hovering with mouse
+url_color               {{ palette.rosewater.hex }}
+
+# Kitty window border colors
+active_border_color     {{ palette.lavender.hex }}
+inactive_border_color   {{ palette.overlay0.hex }}
+bell_border_color       {{ palette.yellow.hex }}
+
+# OS Window titlebar colors
+wayland_titlebar_color system
+macos_titlebar_color system
+
+# Tab bar colors
+active_tab_foreground   {% if flavor.dark %}{{ palette.crust.hex }}{% else %}{{ palette.base.hex }}{% endif %}
+active_tab_background   {{ palette.mauve.hex }}
+inactive_tab_foreground {{ palette.text.hex }}
+inactive_tab_background {% if flavor.dark %}{{ palette.mantle.hex }}{% else %}{{ palette.overlay0.hex }}{% endif %}
+tab_bar_background      {% if flavor.dark %}{{ palette.crust.hex }}{% else %}{{ palette.surface1.hex }}{% endif %}
+
+# Colors for marks (marked text in the terminal)
+mark1_foreground {{ palette.base.hex }}
+mark1_background {{ palette.lavender.hex }}
+mark2_foreground {{ palette.base.hex }}
+mark2_background {{ palette.mauve.hex }}
+mark3_foreground {{ palette.base.hex }}
+mark3_background {{ palette.sapphire.hex }}
+
+# The 16 terminal colors
+
+# black
+color0 {% if flavor.dark %}{{ palette.surface1.hex }}{% else %}{{ palette.subtext1.hex }}{% endif %}
+color8 {% if flavor.dark %}{{ palette.surface2.hex }}{% else %}{{ palette.subtext0.hex }}{% endif %}
+
+# red
+color1 {{ palette.red.hex }}
+color9 {{ palette.red.hex }}
+
+# green
+color2  {{ palette.green.hex }}
+color10 {{ palette.green.hex }}
+
+# yellow
+color3  {{ palette.yellow.hex }}
+color11 {{ palette.yellow.hex }}
+
+# blue
+color4  {{ palette.blue.hex }}
+color12 {{ palette.blue.hex }}
+
+# magenta
+color5  {{ palette.pink.hex }}
+color13 {{ palette.pink.hex }}
+
+# cyan
+color6  {{ palette.teal.hex }}
+color14 {{ palette.teal.hex }}
+
+# white
+color7  {% if flavor.dark %}{{ palette.subtext1.hex }}{% else %}{{ palette.surface2.hex }}{% endif %}
+color15 {% if flavor.dark %}{{ palette.subtext0.hex }}{% else %}{{ palette.surface1.hex }}{% endif %}
